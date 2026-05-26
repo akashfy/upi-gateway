@@ -1,21 +1,22 @@
-# 🔐 Kodelyx Pay — UPI Auto-Detection Gateway
+# 🔐 UPI Gateway — Self-Hosted Payment Verification System
 
-A premium, self-hosted UPI payment gateway with automatic payment verification via email parsing. Zero transaction fees. Built with Next.js.
+A self-hosted UPI payment gateway with **automatic payment detection** via email parsing. Accept payments with **zero transaction fees** — no Razorpay, no Stripe, no middleman.
 
 ## ✨ Features
 
-- **QR-based UPI Payments** — Display a QR code for customers to pay via any UPI app
-- **Auto-Detection** — Parses incoming PhonePe email notifications via IMAP to automatically detect payments
+- **QR Code Payments** — Show a UPI QR code, customer pays via any UPI app (GPay, PhonePe, Paytm, etc.)
+- **Auto-Detection** — Automatically detects payments by parsing incoming PhonePe email notifications via IMAP
 - **Transaction ID Verification** — Manual verification using UTR / Transaction ID
 - **UPI ID Verification** — Match payments by sender's UPI ID
-- **Premium UI** — Animated, glassmorphic checkout flow with Framer Motion
-- **Self-Hosted** — No third-party payment gateway dependency. 0% fees.
+- **Premium Animated UI** — Smooth checkout flow with Framer Motion animations
+- **Zero Fees** — No payment gateway charges. Direct UPI to your bank.
+- **Fully Configurable** — Set your own business name, logo, QR code, and UPI ID via `.env`
 
 ## 🛠 Tech Stack
 
-- **Framework**: Next.js 16 (App Router)
+- **Framework**: Next.js (App Router)
 - **Language**: TypeScript
-- **UI**: React 19, Framer Motion, Lucide Icons, Sonner Toasts
+- **UI**: React, Framer Motion, Lucide Icons, Sonner Toasts
 - **Email Parsing**: IMAP (ImapFlow) + Mailparser
 - **Database**: JSON file-based (lightweight, no external DB needed)
 
@@ -24,9 +25,9 @@ A premium, self-hosted UPI payment gateway with automatic payment verification v
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/kodelyx-pay.git
-cd kodelyx-pay
-bun install  # or npm install
+git clone https://github.com/akashfy/upi-gateway.git
+cd upi-gateway
+npm install  # or bun install
 ```
 
 ### 2. Configure Environment
@@ -34,12 +35,12 @@ bun install  # or npm install
 Create a `.env` file:
 
 ```env
-# Business Info (shown on frontend)
+# Business Info (shown on frontend — customize these)
 NEXT_PUBLIC_BUSINESS_NAME=Your Business Name
 NEXT_PUBLIC_BUSINESS_LOGO=YB
 NEXT_PUBLIC_QR_IMAGE_URL=https://your-qr-image-url.png
 NEXT_PUBLIC_UPI_ID=your-upi@ybl
-NEXT_PUBLIC_ACCESS_FILE_URL=https://your-file-link.com
+NEXT_PUBLIC_ACCESS_FILE_URL=https://your-download-link.com
 
 # IMAP Email Listener (for auto-detection)
 IMAP_USER=your-email@gmail.com
@@ -55,7 +56,7 @@ API_WEBHOOK_URL=http://localhost:8090/api/email-webhook
 ### 3. Run
 
 ```bash
-bun run dev  # or npm run dev
+npm run dev  # or bun run dev
 # Opens at http://localhost:8090
 ```
 
@@ -63,16 +64,25 @@ bun run dev  # or npm run dev
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/sync-inbox` | GET | Sync PhonePe emails from Gmail IMAP |
+| `/api/sync-inbox` | GET | Sync payment emails from Gmail IMAP |
 | `/api/detect-payment` | GET | Verify payment by UTR, UPI ID, or auto-detect |
 | `/api/email-webhook` | POST | Receive and parse email webhook data |
 
+## ⚙️ How It Works
+
+1. Customer enters name/phone → sees your UPI QR code
+2. Customer pays via any UPI app
+3. PhonePe sends a payment confirmation email to your Gmail
+4. Gateway reads the email via IMAP and saves transaction to DB
+5. Customer enters Transaction ID or UPI ID → payment verified ✅
+6. Customer gets access to your file/product
+
 ## 🔒 Security
 
-- `.env` file with credentials is **never** committed to Git
+- `.env` credentials are **never** committed to Git
 - `database.json` (transaction data) is excluded from version control
-- SSL encryption badges shown on checkout UI
+- All business info is configurable via environment variables
 
 ## 📄 License
 
-Private — Kodelyx Lab
+MIT
